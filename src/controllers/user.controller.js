@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 
 
-const generateAccessAndRefereshTokens = async(userId) =>{
+const generateAccessAndRefreshTokens = async(userId) =>{
     try {
         const user = await User.findById(userId)
         const accessToken = user.generateAccessToken()
@@ -20,7 +20,7 @@ const generateAccessAndRefereshTokens = async(userId) =>{
 
 
     } catch (error) {
-        throw new ApiError(500, "Something went wrong while generating referesh and access token")
+        throw new ApiError(500, "Something went wrong while generating refresh and access token")
     }
 }
 
@@ -133,7 +133,7 @@ const loginUser = asyncHandler(async (req, res) =>{
     throw new ApiError(401, "Invalid user credentials")
     }
 
-   const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(user._id)
+   const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id)
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
@@ -212,7 +212,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             secure: true
         }
     
-        const {accessToken, newRefreshToken} = await generateAccessAndRefereshTokens(user._id)
+        const {accessToken, newRefreshToken} = await generateAccessAndRefreshTokens(user._id)
     
         return res
         .status(200)
@@ -410,7 +410,6 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
                 avatar: 1,
                 coverImage: 1,
                 email: 1
-
             }
         }
     ])
